@@ -9,13 +9,15 @@ Plane::Plane(const Vec3 &point, const Vec3 &normal, double shininess, double ref
 
 Vec3 const Plane::getColor(const Vec3 &point) const {
 	const double step = 0.1;
-	//Vec3 n = getNormal(r);
-	//Vec3 s1(-n.y, n.x, n.z), s2(n.x, -n.z, n.y);
-	int d = ((int)(this->point - point).abs() % 2 + 2) % 2;
-	if (d == 0) {
+	Vec3 s1(-normal.y, normal.x, normal.z),
+		s2(normal.x, -normal.z, normal.y),
+		r = point - this->point;
+	double dist = r.abs(),
+		t1 = r.dot(s1),
+		t2 = r.dot(s2);
+	if ((((int)t1 + (t1 < 0 ? 1 : 0)) & 1) == (((int)t2 + (t2 < 0 ? 1 : 0)) & 1)) {
 		return Vec3(0, 0, 0);
-	}
-	else {
+	} else {
 		return Vec3(1, 1, 1);
 	}
 }

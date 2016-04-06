@@ -115,12 +115,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void initializeScene() {
 	// add objects
-	objects.push_back(new Sphere(Vec3(0.5, 0.5, 5), 1, Vec3(1, 0, 0), 10, NOT_REFLECTIVE, NOT_REFRACTIVE));
-	objects.push_back(new Sphere(Vec3(2, 0.5, 7), 1, Vec3(0, 1, 0), 9, NOT_REFLECTIVE, NOT_REFRACTIVE));
-	objects.push_back(new Sphere(Vec3(1.5, 1.5, 4), 0.5, Vec3(0, 0, 1), 8, NOT_REFLECTIVE, NOT_REFRACTIVE));
-	objects.push_back(new Plane(Vec3(0.5, -3, 10), Vec3(0, 1, 0), NOT_SHINY, NOT_REFLECTIVE));
+	objects.push_back(new Sphere(Vec3(0.5, 0.5, 5), 1, Vec3(1, 0, 0), 10, 0.5, 0.5));
+	objects.push_back(new Sphere(Vec3(2, 0.5, 7), 1, Vec3(0, 1, 0), 6, NOT_REFLECTIVE, NOT_REFRACTIVE));
+	objects.push_back(new Sphere(Vec3(1.5, 1.5, 4), 0.5, Vec3(0, 0, 1), 12, NOT_REFLECTIVE, NOT_REFRACTIVE));
+	objects.push_back(new Plane(Vec3(0.5, -3, 10), Vec3(0, 1, 0), 10, NOT_REFLECTIVE));
 	// add lights
 	lights.push_back(Light(Vec3(2, 3, 0), 0.5));
 	lights.push_back(Light(Vec3(-5, 4, 2), 0.5));
-
+	//lights.push_back(Light(Vec3(0.5,-1, 2), 0.33));
 }

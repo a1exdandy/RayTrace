@@ -3,17 +3,15 @@
 #include "Vec3.h"
 #include "Object.h"
 #include "Light.h"
+#include "RayTracer.h"
 
-const double ambientColorCoefficient = 0.15;
-const Vec3 backgroundColor(1, 1, 1);
-
-Vec3 const rayTrace(const Vec3 &point, const Vec3 &direction, const std::vector<Object *> &objects, const std::vector<Light> &lights) {
+const Vec3 rayTrace(const Vec3 &point, const Vec3 &direction, const std::vector<Object *> &objects, const std::vector<Light> &lights, int traceDepth) {
 	// find nearest intersection
 	Object *object = NULL;
 	double min_dist = NOT_INTERSECTED;
 	for (Object *obj : objects) {
 		double dist = obj->intersection(point, direction);
-		if (dist < min_dist) {
+		if (distLimit < dist && dist < min_dist) {
 			object = obj;
 			min_dist = dist;
 		}
@@ -34,9 +32,9 @@ Vec3 const rayTrace(const Vec3 &point, const Vec3 &direction, const std::vector<
 	Vec3 diffuseColor;
 	Vec3 specularColor;
 	Vec3 reflectedColor;
-	Vec3 refractionColor;
+	Vec3 refractedColor;
 
-	// calculate diffuse color (use Lambert formulas)
+	// calculate diffuse and specular color (Phong reflection model)
 	for (const Light &lightObj : lights) {
 		Vec3 lightRay = (lightObj.getPoint() - hit).normalize();
 		bool inShadow = false;
@@ -50,7 +48,7 @@ Vec3 const rayTrace(const Vec3 &point, const Vec3 &direction, const std::vector<
 		}
 		if (!inShadow) {
 			if (object->getShininess() != NOT_SHINY) {
-				Vec3 lightRayReflected = (nhit * 2 * lightRay.dot(nhit) - lightRay).normalize();
+				Vec3 lightRayReflected = reflect(lightRay, nhit).normalize();
 				double shininessCoefficient = lightRayReflected.dot(direction.normalize() * -1);
 				if (shininessCoefficient > 0) {
 					specularColor += Vec3(1, 1, 1) * pow(shininessCoefficient, object->getShininess()) * lightObj.getLightness();
@@ -60,13 +58,36 @@ Vec3 const rayTrace(const Vec3 &point, const Vec3 &direction, const std::vector<
 			if (diffuseCoefficient > 0)
 				diffuseColor += surfaceColor * diffuseCoefficient * lightObj.getLightness();
 		}
-
 	}
 
-	return ambientColor + diffuseColor + specularColor + reflectedColor + refractionColor;
+	// calculate reflection and refraction color (Fresnel)
+	// TODO
+
+	double reflectionCoefficient = 0,
+		refractionCoefficient = 0,
+		airRefractionCoefficient;
+	if (object->getReflectivity() != NOT_REFLECTIVE) {
+		reflectionCoefficient = object->getReflectivity();
+	}
+
+
+	return ambientColor + diffuseColor + specularColor + reflectedColor + refractedColor;
 }
 
-unsigned long vectorToColor(const Vec3 &vec) {
+const Vec3 reflect(const Vec3 &vector, const Vec3 &normal) {
+	return normal * vector.dot(normal) * 2.0 - vector;
+}
+
+const Vec3 refract(const Vec3 &vector, const Vec3 &normal, double n1, double n2) {
+	double n = n1 / n2,
+		cosAlpha = -vector.dot(normal),
+		sin2Alpha = 1 - cosAlpha*cosAlpha,
+		sin2Omega = n*n * sin2Alpha,
+		cosOmega = sqrt(1 - sin2Omega);
+	return vector * n + normal * (n * cosAlpha - cosOmega);
+}
+
+const unsigned long vectorToColor(const Vec3 &vec) {
 	unsigned int r, g, b;
 	r = std::min((int)(vec.x * 255), 255);
 	g = std::min((int)(vec.y * 255), 255);
