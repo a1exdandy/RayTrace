@@ -89,7 +89,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				x = ((double)j + 0.5) / (double)width;
 				y = ((double)(height - i) - 0.5) / (double)height;
 				Vec3 color = 
-					rayTrace(eye, (Vec3(x, y, 1) - eye).normalize(), objects, lights);
+					rayTrace(eye, (Vec3(x, y, 1) - eye).normalize(), objects, lights, 15);
 				SetPixel(hDC, j, i, vectorToColor(color));
 			}
 		}
@@ -115,12 +115,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void initializeScene() {
 	// add objects
-	objects.push_back(new Sphere(Vec3(0.5, 0.5, 5), 1, Vec3(1, 0, 0), 10, 0.5, 0.5));
-	objects.push_back(new Sphere(Vec3(2, 0.5, 7), 1, Vec3(0, 1, 0), 6, NOT_REFLECTIVE, NOT_REFRACTIVE));
-	objects.push_back(new Sphere(Vec3(1.5, 1.5, 4), 0.5, Vec3(0, 0, 1), 12, NOT_REFLECTIVE, NOT_REFRACTIVE));
-	objects.push_back(new Plane(Vec3(0.5, -3, 10), Vec3(0, 1, 0), 10, NOT_REFLECTIVE));
+	objects.push_back(new Sphere(Vec3(-0.5, 0, 7), 1, Vec3(1, 0, 0), 10, 0.5, NOT_REFRACTIVE));
+	objects.push_back(new Sphere(Vec3(1.5, 0, 7), 1, Vec3(0, 1, 0), 6, 0.5, NOT_REFRACTIVE));
+	objects.push_back(new Sphere(Vec3(0.5, 1.5, 4), 0.5, Vec3(0, 0, 1), 15, NOT_REFLECTIVE, 0.15));
+	objects.push_back(new Plane(Vec3(0.5, -1, 10), Vec3(0, 1, 0), 10, 0.5));
+	//objects.push_back(new Plane(Vec3(0.5, 0.5, 10), Vec3(0, 0, -1), 10, 0.5));
 	// add lights
 	lights.push_back(Light(Vec3(2, 3, 0), 0.5));
 	lights.push_back(Light(Vec3(-5, 4, 2), 0.5));
-	//lights.push_back(Light(Vec3(0.5,-1, 2), 0.33));
+	//lights.push_back(Light(Vec3(0.5,4, 2), 0.33));
 }
