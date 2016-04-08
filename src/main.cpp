@@ -43,7 +43,7 @@ int main() {
 
 	hMainWnd = CreateWindow(
 		szClassName, "RayTracer", WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, 800, 800,
+		CW_USEDEFAULT, 0, 1000, 1000,
 		(HWND)NULL, (HMENU)NULL,
 		(HINSTANCE)NULL, NULL
 		);
@@ -115,13 +115,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void initializeScene() {
 	// add objects
-	objects.push_back(new Sphere(Vec3(-0.5, 0, 7), 1, Vec3(1, 0, 0), 10, 0.5, NOT_REFRACTIVE));
+	// tranparent spheres
+	objects.push_back(new Sphere(Vec3(0.75, 1, 2), 0.3, Vec3(0.1, 0.1, 0.1), 15, NOT_REFLECTIVE, 0.97));
+	objects.push_back(new Sphere(Vec3(0.7, -0.5, 4.3), 0.5, Vec3(0.2, 0.2, 0.2), 15, NOT_REFLECTIVE, 0.5));
+
+	// red sphere
+	objects.push_back(new Sphere(Vec3(-0.5, 0, 7), 1, Vec3(1, 0, 0), 20, 0.5, NOT_REFRACTIVE));
+	// green sphere
 	objects.push_back(new Sphere(Vec3(1.5, 0, 7), 1, Vec3(0, 1, 0), 6, 0.5, NOT_REFRACTIVE));
-	objects.push_back(new Sphere(Vec3(0.5, 1.5, 4), 0.5, Vec3(0, 0, 1), 15, NOT_REFLECTIVE, 0.15));
+	// blue sphere
+	objects.push_back(new Sphere(Vec3(0.5, 1.75, 4), 0.5, Vec3(0, 0, 1), 15, NOT_REFLECTIVE, 0.15));
+	// checkerboard
 	objects.push_back(new Plane(Vec3(0.5, -1, 10), Vec3(0, 1, 0), 10, 0.5));
 	//objects.push_back(new Plane(Vec3(0.5, 0.5, 10), Vec3(0, 0, -1), 10, 0.5));
-	// add lights
+	// lights
 	lights.push_back(Light(Vec3(2, 3, 0), 0.5));
 	lights.push_back(Light(Vec3(-5, 4, 2), 0.5));
-	//lights.push_back(Light(Vec3(0.5,4, 2), 0.33));
+	// lights.push_back(Light(Vec3(0.5,4, 2), 0.5));
 }
