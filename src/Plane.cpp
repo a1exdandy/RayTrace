@@ -9,8 +9,10 @@ Plane::Plane(const Vec3 &point, const Vec3 &normal, double shininess, double ref
 
 Vec3 const Plane::getColor(const Vec3 &point) const {
 	const double step = 0.1;
-	Vec3 s1(-normal.y, normal.x, normal.z),
-		s2(normal.x, -normal.z, normal.y),
+	Vec3 s1(-normal.y, -normal.z, normal.x),
+		s2(normal.y * s1.z + normal.z * s1.y,
+			normal.x*s1.z - normal.z*s1.x,
+			-normal.y*s1.x - normal.x*s1.y),
 		r = point - this->point;
 	double dist = r.abs(),
 		t1 = r.dot(s1),
